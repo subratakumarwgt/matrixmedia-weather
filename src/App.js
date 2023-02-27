@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getCountries } from "./api/resources.api"
 import { setCountries } from './action/filters.actions';
 import { getLatLon, getWeather } from './api/openWeather.api';
+import WeatherReport from './components/WeatherReport';
 
 
 function App() {
@@ -12,6 +13,8 @@ function App() {
     country:"",
     city:""
   })
+
+  const [weather,setWeather] = useState({})
 
   const handleInputChange = (event) => {
     setInputs({
@@ -22,14 +25,35 @@ function App() {
   }
   const handleSearch =async () => {
     try {
+      setWeather({})
       let city = inputs.city
-    let country = inputs.country
-    let {lat,lon} = await getLatLon(city,country)
-    let weather = await getWeather(lat,lon)
-    console.log(weather) 
-    } catch (error) {
-      console.log(error.message)
+     let country = inputs.country
+     if(city && country){
+      let latlon = await getLatLon(city,country).catch(err => {
+        alert(err.message)
+        return;
+      })
+    
+        const {
+          lat,
+          lon
+        } = latlon
+        let weather = await getWeather(lat,lon)
+    
+        setWeather(weather)
+      
+     
+      
     }
+    else{
+      alert("Please provide city/country")
+
+    }
+  } catch (error) {
+    
+    console.log(error)
+  }
+    
    
    
   }
@@ -76,8 +100,23 @@ function App() {
           <div className='col-md-10'>
           <h4>Matrixmedia React Weather APP</h4>
           <div className='container'>
-            <Filter inputs = {inputs} handleInputChange = {handleInputChange} countries={countriesList} handleSearch={handleSearch} />
+            <Filter 
+            inputs = {inputs} 
+            handleInputChange = {handleInputChange} 
+            countries={countriesList} 
+            handleSearch={handleSearch} />
             </div>
+          <div className = "container">
+            {
+              inputs.city && inputs.country && weather.main &&
+              <WeatherReport 
+              city = {inputs.city} 
+              country = {inputs.country} 
+              weather = {weather} 
+              />
+            }
+           
+          </div>
          </div>
          </div>
     </div>

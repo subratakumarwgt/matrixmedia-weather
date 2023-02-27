@@ -50,7 +50,10 @@ export const getLatLon = (city,countryCode) => {
    return new Promise(async(resolve,reject)=>{
     await axios.get(url+"?"+serialize(data))
     .then(response => {
+        if(response.data[0])
         resolve(response.data[0])
+        else
+        reject({message:"Could not found location"})
     })
     .catch(err=>{
         reject(err)

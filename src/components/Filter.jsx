@@ -23,7 +23,7 @@ function Filter(props) {
                 <label htmlFor="">City</label>
                 <input type="text" className='form-control' name='city' value={props.inputs.city} onChange={(event)=>props.handleInputChange(event)} />
             </div>
-            <div className='col-md-2 p-2'>
+            <div className='col-md-10'>
                 <button  className='btn btn-primary mt-4' onClick={()=> props.handleSearch()}>Search</button>
                 </div> 
            </div>
