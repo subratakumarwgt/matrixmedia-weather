@@ -7,11 +7,12 @@
 
 This project is a demo weather app 
 
+## instructions
 to install first get the repository,
 open terminal from project folder
 run following commands
 
-npm install
-npm start
+1.npm install
+2.npm start
 
 
