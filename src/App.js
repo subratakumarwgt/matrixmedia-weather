@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCountries } from "./api/resources.api"
 import { setCountries } from './action/filters.actions';
+import { setWeather } from './action/weather.actions';
 import { getLatLon, getWeather } from './api/openWeather.api';
 import WeatherReport from './components/WeatherReport';
 
@@ -14,7 +15,9 @@ function App() {
     city:""
   })
 
-  const [weather,setWeather] = useState({})
+  const countriesList = useSelector(state => state.countries)
+  const weatherDetails = useSelector(state => state.weather)
+  const dispatch = useDispatch()
 
   const handleInputChange = (event) => {
     setInputs({
@@ -25,25 +28,20 @@ function App() {
   }
   const handleSearch =async () => {
     try {
-      setWeather({})
+      dispatch(setWeather({}))
       let city = inputs.city
      let country = inputs.country
      if(city && country){
       let latlon = await getLatLon(city,country).catch(err => {
         alert(err.message)
         return;
-      })
-    
+      })    
         const {
           lat,
           lon
         } = latlon
-        let weather = await getWeather(lat,lon)
-    
-        setWeather(weather)
-      
-     
-      
+        let weather = await getWeather(lat,lon)    
+        dispatch(setWeather(weather))   
     }
     else{
       alert("Please provide city/country")
@@ -58,8 +56,7 @@ function App() {
    
   }
 
-  const countriesList = useSelector(state => state.countries)
-  const dispatch = useDispatch()
+
   const allCountries = async () => {
     try {
         let listObject = await getCountries() 
@@ -108,11 +105,11 @@ function App() {
             </div>
           <div className = "container">
             {
-              inputs.city && inputs.country && weather.main &&
+              inputs.city && inputs.country && weatherDetails.main &&
               <WeatherReport 
               city = {inputs.city} 
               country = {inputs.country} 
-              weather = {weather} 
+              weather = {weatherDetails} 
               />
             }
            
