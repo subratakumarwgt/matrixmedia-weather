@@ -1,5 +1,13 @@
-import { Axios } from "axios";
+import axios from "axios";
 import {openWeather} from "../config/openWeather.config"
+ const serialize = (obj) => {
+    var str = [];
+    for (var p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    return str.join("&");
+  }
 
 export const getWeather = (lat,lon) => {
     let appid = openWeather.apiKey
@@ -8,11 +16,10 @@ export const getWeather = (lat,lon) => {
         lat,
         lon,
         appid
-    }
-    const axios = new Axios
-
+    }   
+    data = serialize(data)
    return new Promise((resolve,reject)=>{
-    axios.get(url,data)
+    axios.get(url+"?"+data)
     .then(response => {
         resolve(response.data)
     })
@@ -21,20 +28,29 @@ export const getWeather = (lat,lon) => {
     })
    })
 }
-export const getLatLon = (city=null,country=null) => {
+export const getLatLon = (city,countryCode) => {
     let appid = openWeather.apiKey
-    let url = openWeather.currentWeatherEndPoint
+    let url = openWeather.geoLocationEndPoint
+
+    let q = []
+
+    if(city)
+    q.push(city)
+    if(countryCode)
+    q.push(countryCode)
+
+    q = q.join(",")
+
     let data = {
-        lat,
-        lon,
+        q,
+        limit:5,
         appid
     }
-    const axios = new Axios
-
-   return new Promise((resolve,reject)=>{
-    axios.get(url,data)
+ 
+   return new Promise(async(resolve,reject)=>{
+    await axios.get(url+"?"+serialize(data))
     .then(response => {
-        resolve(response.data)
+        resolve(response.data[0])
     })
     .catch(err=>{
         reject(err)
