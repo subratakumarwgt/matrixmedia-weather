@@ -1,10 +1,10 @@
 export const weather =  (state =  {} , action) => {
     switch (action.type) {
-        case "SET":
+        case "SETWEATHER":
             return action.payload        
     
         default:
-            return state
+            return {    }
         
     }
 }

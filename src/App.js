@@ -28,7 +28,7 @@ function App() {
   }
   const handleSearch =async () => {
     try {
-      dispatch(setWeather({}))
+      // dispatch(setWeather({}))
       let city = inputs.city
      let country = inputs.country
      if(city && country){
